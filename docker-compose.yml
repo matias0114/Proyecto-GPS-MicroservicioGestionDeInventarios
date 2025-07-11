@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  microservicio-gestion-de-inventarios:
+    image: matiasjara1901244/proyecto-gps-microserviciogestiondeinventarios:latest
+    container_name: microservicio-gestion-de-inventarios
+    # No exponemos puertos
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d0sgjdemcj7s73f0as7g-a.oregon-postgres.render.com:5432/proyectogps?sslmode=require
+      SPRING_DATASOURCE_USERNAME: gps
+      SPRING_DATASOURCE_PASSWORD: D4bgSZVUlMYcx2fdtLvFED28lEl1Gsy5
