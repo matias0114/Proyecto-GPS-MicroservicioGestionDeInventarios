@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 env:
-  IMAGE_NAME: proyectogps-microserviciogestiondeinventarios
+  IMAGE_NAME: proyecto-gps-microserviciogestiondeinventarios 
 
 jobs:
   build-and-dockerize:
@@ -27,8 +27,8 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build Microservice GestionDeInventarios (Maven) 
-      working-directory: Back/Microservicios/MicroservicioGestionDeInventarios
+    - name: Build MicroservicioGestionDeInventarios (Maven)
+      working-directory: Backend
       run: mvn clean install
 
     - name: Set up Docker Buildx
@@ -48,25 +48,25 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
-        context: ./Back/Microservicios/MicroservicioGestionDeInventarios  
-        file: ./Back/Microservicios/MicroservicioGestionDeInventarios/Dockerfile 
+        context: ./Backend
+        file: ./Backend/Dockerfile
         push: true
         tags: |
-          ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-          ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          ${{ secrets.DOCKER_USERNAME }}/proyecto-gps-microserviciogestiondeinventarios:latest
+          ${{ secrets.DOCKER_USERNAME }}/proyecto-gps-microserviciogestiondeinventarios:${{ github.sha }}
 
     - name: Replace image tag in Kubernetes manifest
       run: |
-        sed -i "s|matiasjara1901244/proyectogps-microserviciogestiondeinventarios:__TAG__|matiasjara1901244/proyectogps-microserviciogestiondeinventarios:${{ github.sha }}|g" k8s/microservicio-gestion-de-inventarios-deployment.yaml  # Cambié la ruta del deployment.yaml
+        sed -i "s|matiasjara1901244/proyectogps-backend:__TAG__|matiasjara1901244/proyectogps-backend:${{ github.sha }}|g" k8s/backend-deployment.yaml
 
     - name: Commit and push updated deployment.yaml
       run: |
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
-        git add k8s/microservicio-gestion-de-inventarios-deployment.yaml  # Cambié la ruta
+        git add k8s/backend-deployment.yaml
         if git diff --cached --quiet; then
           echo "No changes to commit"
         else
-          git commit -m "Update Microservicio GestionDeInventarios image tag to ${{ github.sha }}"
+          git commit -m "Update backend image tag to ${{ github.sha }}"
           git push
         fi
