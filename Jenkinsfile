@@ -7,7 +7,7 @@ pipeline {
   }
 
   environment {
-    IMAGE_NAME   = "matiasjara1901244/proyecto-gps-microserviciogestiondeinventarios"  // Nueva imagen
+    IMAGE_NAME   = "matiasjara1901244/proyecto-gps-microserviciogestiondeinventarios"
     SSH_CRED     = 'ssh-prod'
     REMOTE_USER  = 'matiasjara1901'
     REMOTE_HOST  = '190.13.177.173'
@@ -22,7 +22,7 @@ pipeline {
 
     stage('Build & Push') {
       steps {
-        dir('Backend') {  // Ruta del microservicio
+        dir('Backend') {
           sh "docker build -t ${IMAGE_NAME}:latest ."
         }
         withCredentials([usernamePassword(
@@ -42,14 +42,15 @@ pipeline {
       steps {
         sshagent([SSH_CRED]) {
           sh """
-            ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} '\\
-              docker pull ${IMAGE_NAME}:latest && \\  // Obtiene la imagen del repositorio
-              docker stop microservicio-gestion-de-inventarios || true && \\  // Detiene el contenedor si está corriendo
-              docker rm microservicio-gestion-de-inventarios || true && \\  // Elimina el contenedor detenido
-              docker run -d \\  // Ejecuta el contenedor
-                --name       microservicio-gestion-de-inventarios \\  // Nombre del contenedor
-                --restart    always \\  // Reinicia automáticamente si el contenedor se cae
-                ${IMAGE_NAME}:latest'  // Ejecuta la última imagen
+            ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} '
+              docker pull ${IMAGE_NAME}:latest && \\
+              docker stop microservicio-gestion-de-inventarios || true && \\
+              docker rm microservicio-gestion-de-inventarios || true && \\
+              docker run -d \\
+                --name microservicio-gestion-de-inventarios \\
+                --restart always \\
+                ${IMAGE_NAME}:latest
+            '
           """
         }
       }
