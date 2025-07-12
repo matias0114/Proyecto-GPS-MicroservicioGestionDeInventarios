@@ -4,8 +4,25 @@ services:
   microservicio-gestion-de-inventarios:
     image: matiasjara1901244/proyecto-gps-microserviciogestiondeinventarios:latest
     container_name: microservicio-gestion-de-inventarios
-    # No exponemos puertos
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d0sgjdemcj7s73f0as7g-a.oregon-postgres.render.com:5432/proyectogps?sslmode=require
-      SPRING_DATASOURCE_USERNAME: gps
-      SPRING_DATASOURCE_PASSWORD: D4bgSZVUlMYcx2fdtLvFED28lEl1Gsy5
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d1osq23uibrs73d4hrig-a.oregon-postgres.render.com:5432/postgresss_33h5?sslmode=require
+      SPRING_DATASOURCE_USERNAME: postgresss_33h5_user
+      SPRING_DATASOURCE_PASSWORD: 8lsWOLx1Ub4jFnMKJFrnTXZTBcJ2VgbH
+    restart: always
+    networks:
+      - mynetwork
+
+  backend:
+    image: matiasjara1901244/proyectogps-backend:latest
+    container_name: springboot-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d1osq23uibrs73d4hrig-a.oregon-postgres.render.com:5432/postgresss_33h5?sslmode=require
+      SPRING_DATASOURCE_USERNAME: postgresss_33h5_user
+      SPRING_DATASOURCE_PASSWORD: 8lsWOLx1Ub4jFnMKJFrnTXZTBcJ2VgbH
+    restart: always
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
