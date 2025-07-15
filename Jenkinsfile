@@ -51,6 +51,8 @@ pipeline {
                 --restart always \\
                 ${IMAGE_NAME}:latest
             '
+
+            docker network connect backend-net microservicio-gestion-de-inventarios
           """
         }
       }
