@@ -71,8 +71,15 @@ public class InventoryController {
     @PutMapping("/{inventoryId}")
     public ResponseEntity<Inventory> updateInventory(
         @PathVariable Long inventoryId,
-        @RequestBody InventoryDTO inventoryDTO) {
-        Inventory inventory = inventoryService.updateInventory(inventoryId, inventoryDTO.getQuantity());
-        return ResponseEntity.ok(inventory);
+        @RequestBody Inventory inventory) {
+        Inventory updatedInventory = inventoryService.updateInventory(inventoryId, inventory);
+        return ResponseEntity.ok(updatedInventory);
+    }
+
+    // Endpoint para eliminar inventario
+    @DeleteMapping("/{inventoryId}")
+    public ResponseEntity<Void> deleteInventory(@PathVariable Long inventoryId) {
+        inventoryService.deleteInventory(inventoryId);
+        return ResponseEntity.ok().build();
     }
 }

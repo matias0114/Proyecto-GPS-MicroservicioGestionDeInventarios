@@ -8,6 +8,7 @@ import com.ProyectoGPS.Backend.repository.WarehouseRepository;
 import com.ProyectoGPS.Backend.repository.BatchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
@@ -99,14 +100,23 @@ public class InventoryService {
     }
 
     // Método para actualizar inventario
-    public Inventory updateInventory(Long inventoryId, Integer newQuantity) {
+    public Inventory updateInventory(Long inventoryId, Inventory inventoryDetails) {
         Inventory inventory = inventoryRepository.findById(inventoryId)
-            .orElseThrow(() -> new RuntimeException("Inventario no encontrado"));
+            .orElseThrow(() -> new RuntimeException("Inventario no encontrado con id: " + inventoryId));
         
-        inventory.setQuantity(newQuantity);
-        inventory.setCurrentStock(newQuantity); // Actualizar stock actual
+        // Actualizar solo los campos que pueden cambiar
+        inventory.setQuantity(inventoryDetails.getQuantity());
+        inventory.setCurrentStock(inventoryDetails.getQuantity()); // Sincronizar stock actual
         inventory.setLastUpdate(new Date());
         
         return inventoryRepository.save(inventory);
+    }
+
+    // Método para eliminar inventario
+    @Transactional
+    public void deleteInventory(Long inventoryId) {
+        Inventory inventory = inventoryRepository.findById(inventoryId)
+            .orElseThrow(() -> new RuntimeException("Inventario no encontrado con id: " + inventoryId));
+        inventoryRepository.delete(inventory);
     }
 }

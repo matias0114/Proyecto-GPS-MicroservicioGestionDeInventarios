@@ -1,5 +1,6 @@
 package com.ProyectoGPS.Backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -9,6 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "products")
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Product {
 
     @Id

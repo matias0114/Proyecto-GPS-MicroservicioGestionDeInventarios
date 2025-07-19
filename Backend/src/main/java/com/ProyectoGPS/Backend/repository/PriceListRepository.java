@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface PriceListRepository extends JpaRepository<PriceList, Long> {
-    List<PriceList> findByProductId(Long productId);
+    List<PriceList> findByProduct_Id(Long productId);
     
     @Query("SELECT p FROM PriceList p WHERE p.active = true AND p.validFrom <= :date AND (p.validTo IS NULL OR p.validTo >= :date)")
     List<PriceList> findActiveByDate(@Param("date") Date date);

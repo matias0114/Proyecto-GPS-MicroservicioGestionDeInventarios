@@ -1,10 +1,12 @@
 package com.ProyectoGPS.Backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "inventories")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Inventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

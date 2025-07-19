@@ -1,9 +1,11 @@
 package com.ProyectoGPS.Backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "warehouses")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Warehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

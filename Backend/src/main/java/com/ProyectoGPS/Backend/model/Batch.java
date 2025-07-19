@@ -1,12 +1,14 @@
 package com.ProyectoGPS.Backend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
 @Table(name = "batches")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Batch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

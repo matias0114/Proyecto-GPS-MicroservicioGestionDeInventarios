@@ -1,5 +1,6 @@
 package com.ProyectoGPS.Backend.controller;
 
+import com.ProyectoGPS.Backend.dto.PriceListDTO;
 import com.ProyectoGPS.Backend.model.PriceList;
 import com.ProyectoGPS.Backend.service.PriceListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +48,13 @@ public class PriceListController {
     }
 
     @PostMapping
-    public ResponseEntity<PriceList> createPriceList(@RequestBody PriceList priceList) {
-        return ResponseEntity.ok(priceListService.createPriceList(priceList));
+    public ResponseEntity<PriceList> createPriceList(@RequestBody PriceListDTO priceListDTO) {
+        return ResponseEntity.ok(priceListService.createPriceListFromDTO(priceListDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PriceList> updatePriceList(@PathVariable Long id, @RequestBody PriceList priceList) {
-        return ResponseEntity.ok(priceListService.updatePriceList(id, priceList));
+    public ResponseEntity<PriceList> updatePriceList(@PathVariable Long id, @RequestBody PriceListDTO priceListDTO) {
+        return ResponseEntity.ok(priceListService.updatePriceListFromDTO(id, priceListDTO));
     }
 
     @DeleteMapping("/{id}")

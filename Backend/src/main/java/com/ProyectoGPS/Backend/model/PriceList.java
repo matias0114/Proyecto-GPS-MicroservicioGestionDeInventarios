@@ -1,12 +1,15 @@
 package com.ProyectoGPS.Backend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
 @Table(name = "price_lists")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class PriceList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +48,13 @@ public class PriceList {
 
     @Enumerated(EnumType.STRING)
     private Product.PricingMethod pricingMethod; // Método usado para calcular este precio
+
+    // Campos temporales para deserialización desde el frontend
+    @Transient
+    private Long productId;
+    
+    @Transient
+    private Long warehouseId;
 
     public enum PriceType {
         GENERAL("General"),
@@ -167,5 +177,24 @@ public class PriceList {
 
     public void setPricingMethod(Product.PricingMethod pricingMethod) {
         this.pricingMethod = pricingMethod;
+    }
+
+    // Getters y Setters para campos temporales
+    @JsonProperty("productId")
+    public Long getProductId() {
+        return this.product != null ? this.product.getId() : productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    @JsonProperty("warehouseId")
+    public Long getWarehouseId() {
+        return this.warehouse != null ? this.warehouse.getId() : warehouseId;
+    }
+
+    public void setWarehouseId(Long warehouseId) {
+        this.warehouseId = warehouseId;
     }
 }
