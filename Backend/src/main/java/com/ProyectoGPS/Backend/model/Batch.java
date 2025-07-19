@@ -14,9 +14,9 @@ public class Batch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
-    @JsonBackReference("product-batches")
+    @JsonIgnoreProperties({"batches", "priceLists"})
     private Product product;
 
     @Column(nullable = false)

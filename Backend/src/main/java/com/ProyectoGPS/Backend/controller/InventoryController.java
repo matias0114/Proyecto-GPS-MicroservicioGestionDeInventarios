@@ -1,6 +1,7 @@
 package com.ProyectoGPS.Backend.controller;
 
 import com.ProyectoGPS.Backend.dto.InventoryDTO;
+import com.ProyectoGPS.Backend.dto.UpdateInventoryDTO;
 import com.ProyectoGPS.Backend.model.Inventory;
 import com.ProyectoGPS.Backend.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,8 +72,8 @@ public class InventoryController {
     @PutMapping("/{inventoryId}")
     public ResponseEntity<Inventory> updateInventory(
         @PathVariable Long inventoryId,
-        @RequestBody Inventory inventory) {
-        Inventory updatedInventory = inventoryService.updateInventory(inventoryId, inventory);
+        @RequestBody UpdateInventoryDTO updateInventoryDTO) {
+        Inventory updatedInventory = inventoryService.updateInventory(inventoryId, updateInventoryDTO);
         return ResponseEntity.ok(updatedInventory);
     }
 

@@ -1,5 +1,6 @@
 package com.ProyectoGPS.Backend.service;
 
+import com.ProyectoGPS.Backend.dto.UpdateInventoryDTO;
 import com.ProyectoGPS.Backend.model.Inventory;
 import com.ProyectoGPS.Backend.model.Warehouse;
 import com.ProyectoGPS.Backend.model.Batch;
@@ -100,13 +101,17 @@ public class InventoryService {
     }
 
     // Método para actualizar inventario
-    public Inventory updateInventory(Long inventoryId, Inventory inventoryDetails) {
+    public Inventory updateInventory(Long inventoryId, UpdateInventoryDTO updateInventoryDTO) {
         Inventory inventory = inventoryRepository.findById(inventoryId)
             .orElseThrow(() -> new RuntimeException("Inventario no encontrado con id: " + inventoryId));
         
         // Actualizar solo los campos que pueden cambiar
-        inventory.setQuantity(inventoryDetails.getQuantity());
-        inventory.setCurrentStock(inventoryDetails.getQuantity()); // Sincronizar stock actual
+        if (updateInventoryDTO.getQuantity() != null) {
+            inventory.setQuantity(updateInventoryDTO.getQuantity());
+        }
+        if (updateInventoryDTO.getCurrentStock() != null) {
+            inventory.setCurrentStock(updateInventoryDTO.getCurrentStock());
+        }
         inventory.setLastUpdate(new Date());
         
         return inventoryRepository.save(inventory);
