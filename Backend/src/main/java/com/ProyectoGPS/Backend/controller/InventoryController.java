@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/inventory")
@@ -20,61 +21,76 @@ public class InventoryController {
 
     // Endpoint para obtener todos los inventarios
     @GetMapping
-    public ResponseEntity<List<Inventory>> getAllInventories() {
+    public ResponseEntity<List<InventoryDTO>> getAllInventories() {
         List<Inventory> inventories = inventoryService.getAllInventories();
-        return ResponseEntity.ok(inventories);
+        List<InventoryDTO> inventoryDTOs = inventories.stream()
+            .map(InventoryDTO::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(inventoryDTOs);
     }
 
     // Endpoint para crear inventario por barrido
     @PostMapping("/sweep")
-    public ResponseEntity<Inventory> createSweepInventory(@RequestBody InventoryDTO inventoryDTO) {
+    public ResponseEntity<InventoryDTO> createSweepInventory(@RequestBody InventoryDTO inventoryDTO) {
         Inventory inventory = inventoryService.createSweepInventory(
             inventoryDTO.getWarehouseId(),
             inventoryDTO.getBatchId(),
             inventoryDTO.getQuantity()
         );
-        return ResponseEntity.ok(inventory);
+        InventoryDTO inventoryResponseDTO = new InventoryDTO(inventory);
+        return ResponseEntity.ok(inventoryResponseDTO);
     }
 
     // Endpoint para crear inventario selectivo
     @PostMapping("/selective")
-    public ResponseEntity<Inventory> createSelectiveInventory(@RequestBody InventoryDTO inventoryDTO) {
+    public ResponseEntity<InventoryDTO> createSelectiveInventory(@RequestBody InventoryDTO inventoryDTO) {
         Inventory inventory = inventoryService.createSelectiveInventory(
             inventoryDTO.getWarehouseId(),
             inventoryDTO.getBatchId(),
             inventoryDTO.getQuantity()
         );
-        return ResponseEntity.ok(inventory);
+        InventoryDTO inventoryResponseDTO = new InventoryDTO(inventory);
+        return ResponseEntity.ok(inventoryResponseDTO);
     }
 
     // Endpoint para crear inventario general
     @PostMapping("/general/{warehouseId}")
-    public ResponseEntity<List<Inventory>> createGeneralInventory(@PathVariable Long warehouseId) {
+    public ResponseEntity<List<InventoryDTO>> createGeneralInventory(@PathVariable Long warehouseId) {
         List<Inventory> inventories = inventoryService.createGeneralInventory(warehouseId);
-        return ResponseEntity.ok(inventories);
+        List<InventoryDTO> inventoryDTOs = inventories.stream()
+            .map(InventoryDTO::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(inventoryDTOs);
     }
 
     // Endpoint para obtener stock por bodega
     @GetMapping("/warehouse/{warehouseId}")
-    public ResponseEntity<List<Inventory>> getStockByWarehouse(@PathVariable Long warehouseId) {
+    public ResponseEntity<List<InventoryDTO>> getStockByWarehouse(@PathVariable Long warehouseId) {
         List<Inventory> inventories = inventoryService.getStockByWarehouse(warehouseId);
-        return ResponseEntity.ok(inventories);
+        List<InventoryDTO> inventoryDTOs = inventories.stream()
+            .map(InventoryDTO::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(inventoryDTOs);
     }
 
     // Endpoint para obtener stock por lote
     @GetMapping("/batch/{batchId}")
-    public ResponseEntity<List<Inventory>> getStockByBatch(@PathVariable Long batchId) {
+    public ResponseEntity<List<InventoryDTO>> getStockByBatch(@PathVariable Long batchId) {
         List<Inventory> inventories = inventoryService.getStockByBatch(batchId);
-        return ResponseEntity.ok(inventories);
+        List<InventoryDTO> inventoryDTOs = inventories.stream()
+            .map(InventoryDTO::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(inventoryDTOs);
     }
 
     // Endpoint para actualizar inventario
     @PutMapping("/{inventoryId}")
-    public ResponseEntity<Inventory> updateInventory(
+    public ResponseEntity<InventoryDTO> updateInventory(
         @PathVariable Long inventoryId,
         @RequestBody UpdateInventoryDTO updateInventoryDTO) {
         Inventory updatedInventory = inventoryService.updateInventory(inventoryId, updateInventoryDTO);
-        return ResponseEntity.ok(updatedInventory);
+        InventoryDTO inventoryDTO = new InventoryDTO(updatedInventory);
+        return ResponseEntity.ok(inventoryDTO);
     }
 
     // Endpoint para eliminar inventario
