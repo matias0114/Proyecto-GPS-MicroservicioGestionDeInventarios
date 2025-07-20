@@ -99,4 +99,58 @@ public class InventoryController {
         inventoryService.deleteInventory(inventoryId);
         return ResponseEntity.ok().build();
     }
+
+    // Endpoint para obtener inventario específico por lote y bodega
+    @GetMapping("/batch/{batchId}/warehouse/{warehouseId}")
+    public ResponseEntity<InventoryDTO> getInventoryByBatchAndWarehouse(
+            @PathVariable Long batchId, 
+            @PathVariable Long warehouseId) {
+        Inventory inventory = inventoryService.getInventoryByBatchAndWarehouse(batchId, warehouseId);
+        if (inventory == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(new InventoryDTO(inventory));
+    }
+
+    // Endpoint para obtener inventario específico por ID
+    @GetMapping("/{inventoryId}")
+    public ResponseEntity<InventoryDTO> getInventoryById(@PathVariable Long inventoryId) {
+        Inventory inventory = inventoryService.getInventoryById(inventoryId);
+        if (inventory == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(new InventoryDTO(inventory));
+    }
+
+    // Endpoint para reducir stock por venta
+    @PutMapping("/{inventoryId}/reduce-stock")
+    public ResponseEntity<Void> reduceStock(
+            @PathVariable Long inventoryId, 
+            @RequestBody java.util.Map<String, Object> request) {
+        Integer quantity = (Integer) request.get("quantity");
+        String reason = (String) request.getOrDefault("reason", "SALE");
+        
+        boolean success = inventoryService.reduceStock(inventoryId, quantity, reason);
+        if (success) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // Endpoint para incrementar stock (por cancelaciones)
+    @PutMapping("/{inventoryId}/add-stock")
+    public ResponseEntity<Void> addStock(
+            @PathVariable Long inventoryId, 
+            @RequestBody java.util.Map<String, Object> request) {
+        Integer quantity = (Integer) request.get("quantity");
+        String reason = (String) request.getOrDefault("reason", "CANCELLATION");
+        
+        boolean success = inventoryService.addStock(inventoryId, quantity, reason);
+        if (success) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

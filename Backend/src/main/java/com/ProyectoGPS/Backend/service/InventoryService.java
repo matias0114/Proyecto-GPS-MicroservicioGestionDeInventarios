@@ -124,4 +124,59 @@ public class InventoryService {
             .orElseThrow(() -> new RuntimeException("Inventario no encontrado con id: " + inventoryId));
         inventoryRepository.delete(inventory);
     }
+
+    // Método para obtener inventario por lote y bodega específicos
+    public Inventory getInventoryByBatchAndWarehouse(Long batchId, Long warehouseId) {
+        // Obtenemos la lista de inventarios y tomamos el primero con stock disponible
+        List<Inventory> inventories = inventoryRepository.findByBatchIdAndWarehouseId(batchId, warehouseId);
+        
+        // Buscamos el primer inventario con stock disponible
+        return inventories.stream()
+                .filter(inv -> inv.getCurrentStock() != null && inv.getCurrentStock() > 0)
+                .findFirst()
+                .orElse(inventories.isEmpty() ? null : inventories.get(0));
+    }
+
+    // Método para obtener inventario por ID
+    public Inventory getInventoryById(Long inventoryId) {
+        return inventoryRepository.findById(inventoryId).orElse(null);
+    }
+
+    // Método para reducir stock
+    @Transactional
+    public boolean reduceStock(Long inventoryId, Integer quantityToReduce, String reason) {
+        try {
+            Inventory inventory = inventoryRepository.findById(inventoryId)
+                .orElseThrow(() -> new RuntimeException("Inventario no encontrado con id: " + inventoryId));
+            
+            if (inventory.getCurrentStock() < quantityToReduce) {
+                return false; // Stock insuficiente
+            }
+            
+            inventory.setCurrentStock(inventory.getCurrentStock() - quantityToReduce);
+            inventory.setLastUpdate(new Date());
+            inventoryRepository.save(inventory);
+            
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // Método para incrementar stock (para cancelaciones)
+    @Transactional
+    public boolean addStock(Long inventoryId, Integer quantityToAdd, String reason) {
+        try {
+            Inventory inventory = inventoryRepository.findById(inventoryId)
+                .orElseThrow(() -> new RuntimeException("Inventario no encontrado con id: " + inventoryId));
+            
+            inventory.setCurrentStock(inventory.getCurrentStock() + quantityToAdd);
+            inventory.setLastUpdate(new Date());
+            inventoryRepository.save(inventory);
+            
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

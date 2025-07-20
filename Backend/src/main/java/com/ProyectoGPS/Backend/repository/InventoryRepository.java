@@ -15,4 +15,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     List<Inventory> findByBatch(Batch batch);
     List<Inventory> findByWarehouse(Warehouse warehouse);
     List<Inventory> findByCurrentStockLessThan(Integer minimumStock);
+    
+    // Método para encontrar inventario específico por lote y bodega
+    List<Inventory> findByBatchIdAndWarehouseId(Long batchId, Long warehouseId);
 }
