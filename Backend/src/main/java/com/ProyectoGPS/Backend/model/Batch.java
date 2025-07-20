@@ -16,7 +16,7 @@ public class Batch {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
-    @JsonIgnoreProperties({"batches", "priceLists"})
+    @JsonBackReference("product-batches")
     private Product product;
 
     @Column(nullable = false)

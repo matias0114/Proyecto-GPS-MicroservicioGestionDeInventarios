@@ -40,10 +40,12 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference("product-batches")
+    @JsonIgnoreProperties({"product"})
     private List<Batch> batches;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference("product-pricelists")
+    @JsonIgnoreProperties({"product"})
     private List<PriceList> priceLists;
 
     public enum PricingMethod {

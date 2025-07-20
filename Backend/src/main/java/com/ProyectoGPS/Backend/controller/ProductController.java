@@ -1,5 +1,6 @@
 package com.ProyectoGPS.Backend.controller;
 
+import com.ProyectoGPS.Backend.dto.ProductCreateDTO;
 import com.ProyectoGPS.Backend.model.Product;
 import com.ProyectoGPS.Backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -84,13 +85,26 @@ public class ProductController {
     }
 
     // Crear producto
-    @PostMapping
-    public ResponseEntity<?> createProduct(@RequestBody Product product) {
+    @PostMapping(consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> createProduct(@RequestBody ProductCreateDTO productDTO) {
         try {
+            // Validaciones básicas
+            if (productDTO.getCode() == null || productDTO.getCode().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("El código del producto es obligatorio");
+            }
+            if (productDTO.getName() == null || productDTO.getName().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("El nombre del producto es obligatorio");
+            }
+            
+            // Convertir DTO a Product
+            Product product = productDTO.toProduct();
             Product createdProduct = productService.createProduct(product);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error interno del servidor: " + e.getMessage());
         }
     }
 
@@ -132,5 +146,13 @@ public class ProductController {
     public ResponseEntity<Boolean> existsByCode(@PathVariable String code) {
         boolean exists = productService.existsByCode(code);
         return ResponseEntity.ok(exists);
+    }
+
+    // Endpoint de prueba para verificar que el servidor recibe JSON correctamente
+    @PostMapping("/test")
+    public ResponseEntity<?> testEndpoint(@RequestBody ProductCreateDTO productDTO) {
+        return ResponseEntity.ok()
+                .body("✅ Servidor recibió correctamente: " + productDTO.getName() + 
+                      " con código: " + productDTO.getCode());
     }
 }
